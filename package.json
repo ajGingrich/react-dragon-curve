@@ -1,0 +1,21 @@
+{
+  "name": "react-dragon-curve",
+  "version": "0.0.1",
+  "description": "Heighway dragon drawn in React",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "heighway",
+    "dragon",
+    "curve"
+  ],
+  "author": "ajgingrich@yahoo.com",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2"
+  }
+}
