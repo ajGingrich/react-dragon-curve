@@ -2,9 +2,12 @@
   "name": "react-dragon-curve",
   "version": "0.0.1",
   "description": "Heighway dragon drawn in React",
-  "main": "gulpfile.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "NODE_ENV=production gulp prod",
+    "dev": "NODE_ENV=development gulp dev",
+    "lint": "eslint ./",
+    "lint-fix": "eslint --fix ./"
   },
   "keywords": [
     "react",
@@ -12,10 +15,44 @@
     "dragon",
     "curve"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajGingrich/react-dragon-curve"
+  },
+  "bugs": {
+    "url": "https://github.com/ajGingrich/react-dragon-curve/issues"
+  },
+  "homepage": "https://github.com/ajGingrich/react-dragon-curve#readme",
   "author": "ajgingrich@yahoo.com",
   "license": "MIT",
   "dependencies": {
     "react": "^16.5.2",
     "react-dom": "^16.5.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-preset-react": "^6.24.1",
+    "del": "^3.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-google": "^0.9.1",
+    "eslint-plugin-react": "^7.8.2",
+    "gulp": "^3.9.1",
+    "gulp-webserver": "^0.9.1",
+    "highlight.js": "^9.12.0",
+    "rollup": "^0.59.1",
+    "rollup-analyzer-plugin": "^1.1.1",
+    "rollup-plugin-babel": "^3.0.4",
+    "rollup-plugin-commonjs": "8.3.0",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-uglify": "^3.0.0",
+    "rollup-stream": "^1.24.1",
+    "vinyl-source-stream": "^2.0.0"
   }
 }
