@@ -29,6 +29,9 @@ var plugins = [
     }),
     require("rollup-plugin-replace")({
       'process.env.NODE_ENV': JSON.stringify(env),
+    }),
+    require("rollup-plugin-url")({
+      limit: 10 * 1024,
     })
 ]
 
