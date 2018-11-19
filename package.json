@@ -26,8 +26,10 @@
   "author": "ajgingrich@yahoo.com",
   "license": "MIT",
   "dependencies": {
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "konva": "^2.5.1",
+    "react": "^16.6.3",
+    "react-dom": "^16.5.2",
+    "react-konva": "^16.6.31"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

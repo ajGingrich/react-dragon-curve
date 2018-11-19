@@ -9,10 +9,11 @@ class App extends React.Component {
       justifyContent: 'center',
     }
 
+    // <h2 style={headerStyles}>React Dragon Curve</h2>
+
     return (
       <div className="container">
         <div className="row">
-          <h2 style={headerStyles}>React Dragon Curve</h2>
           <DragonCurve />
         </div>
       </div>
