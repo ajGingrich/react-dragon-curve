@@ -12,11 +12,7 @@ class App extends React.Component {
     // <h2 style={headerStyles}>React Dragon Curve</h2>
 
     return (
-      <div className="container">
-        <div className="row">
-          <DragonCurve />
-        </div>
-      </div>
+      <DragonCurve />
     )
   }
 }
