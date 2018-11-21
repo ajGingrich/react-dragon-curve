@@ -5,6 +5,11 @@ import StageWrap from 'react-konva'
 // import angle from './assets/right-angle.png'
 const { Stage, Layer, Line, Text, Star } = StageWrap
 
+const lines = [
+  { x: 0, y: 0 },
+  { x: 400, y: 300 },
+]
+
 class Board extends React.Component {
 
   handleDragStart = (e) => {
@@ -31,28 +36,27 @@ class Board extends React.Component {
 
   render() {
 
+    //offsetX
+    //offsetY
+
     return (
       <Stage width={window.innerWidth} height={window.innerHeight}>
         <Layer>
-          {[...Array(10)].map((_, i) => (
-            <Star
-              key={`star-draggable-${i}`}
-              x={Math.random() * window.innerWidth}
-              y={Math.random() * window.innerHeight}
-              numPoints={5}
-              innerRadius={20}
-              outerRadius={40}
-              fill="#89b717"
-              opacity={0.8}
-              draggable
-              rotation={Math.random() * 180}
-              shadowColor="black"
-              shadowBlur={10}
-              shadowOpacity={0.6}
-              onDragStart={this.handleDragStart}
-              onDragEnd={this.handleDragEnd}
-            />
-          ))}
+          {lines.map((line, i) => {
+            const { x, y } = line
+
+            return (
+              <Line
+                key={`star-draggable-${i}`}
+                x={x}
+                y={y}
+                points={[0, 0, 100, 0, 0, 0]}
+                strokeWidth={3}
+                closed
+                stroke="black"
+              />
+            )
+          })}
         </Layer>
       </Stage>
     )
