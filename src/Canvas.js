@@ -5,6 +5,9 @@ import StageWrap from 'react-konva'
 // import angle from './assets/right-angle.png'
 const { Stage, Layer, Line, Text, Star } = StageWrap
 
+const X_OFFSET = window.innerWidth / 2
+const Y_OFFSET = window.innerHeight / 2
+
 const lines = [
   { x: 0, y: 0 },
   { x: 400, y: 300 },
@@ -36,9 +39,6 @@ class Board extends React.Component {
 
   render() {
 
-    //offsetX
-    //offsetY
-
     return (
       <Stage width={window.innerWidth} height={window.innerHeight}>
         <Layer>
@@ -48,8 +48,8 @@ class Board extends React.Component {
             return (
               <Line
                 key={`star-draggable-${i}`}
-                x={x}
-                y={y}
+                x={x + X_OFFSET}
+                y={y + Y_OFFSET}
                 points={[0, 0, 100, 0, 0, 0]}
                 strokeWidth={3}
                 closed
