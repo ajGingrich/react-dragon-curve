@@ -6,10 +6,10 @@ import Canvas from './Canvas'
 
 class PgnViewer extends React.Component {
   render() {
-    const { height, width } = this.props
+    const { height, width, wrapperStyles, containerName } = this.props
 
     return (
-      <div>
+      <div style={wrapperStyles} >
         <Canvas
           height={height}
           width={width}
