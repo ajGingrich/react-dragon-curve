@@ -1,9 +1,8 @@
 import React from 'react'
-import Konva from 'konva'
 import StageWrap from 'react-konva'
 
-// import angle from './assets/right-angle.png'
-const { Stage, Layer, Line, Text, Star } = StageWrap
+import Portal from './Portal'
+const { Stage, Layer, Line, Text } = StageWrap
 
 const X_ORIGIN = 0
 const Y_ORIGIN = 0
@@ -16,34 +15,20 @@ const points = [
 
 class Board extends React.Component {
 
-  handleDragStart = (e) => {
-    e.target.setAttrs({
-      shadowOffset: {
-        x: 15,
-        y: 15
-      },
-      scaleX: 1.1,
-      scaleY: 1.1
-    });
-  };
+  // rotate = () => {
+  //   this.line.rotate({
+  //     scaleX: Math.random() + 0.8,
+  //     scaleY: Math.random() + 0.8,
+  //     duration: 0.2,
+  //   })
+  // }
 
-  handleDragEnd = (e) => {
-    e.target.to({
-      duration: 0.5,
-      easing: Konva.Easings.ElasticEaseOut,
-      scaleX: 1,
-      scaleY: 1,
-      shadowOffsetX: 5,
-      shadowOffsetY: 5
-    });
-  };
+  rotate = () => {
+    console.log('rotating')
 
-  changeSize = () => {
-    this.line.to({
-      scaleX: Math.random() + 0.8,
-      scaleY: Math.random() + 0.8,
-      duration: 0.2,
-    })
+    // how to animate this
+
+    this.line.rotation(this.line.rotation() + 90);
   }
 
   render() {
@@ -53,14 +38,19 @@ class Board extends React.Component {
 
     return (
       <Stage width={width} height={height} >
+        <Portal>
+          <div className={'button'}>
+            <button onClick={this.rotate}>Click Me</button>
+          </div>
+        </Portal>
         <Layer>
           <Line
             ref={node => { this.line = node }}
             x={X_ORIGIN + offsetX}
+            rotation={90}
             y={Y_ORIGIN + offsetY}
-            points={[0, 0, 100, 0, 0, 0]}
+            points={[0, 0, 100, 0, 100, -100]}
             strokeWidth={2}
-            onDragEnd={this.changeSize}
             draggable
             stroke="black"
           />
