@@ -24,7 +24,7 @@
         "no-multi-spaces": "error",
         "no-global-assign": "error",
         "no-param-reassign": "error",
-        "no-trailing-spaces": [2, { "skipBlankLines": true }],
+        "no-trailing-spaces": "error",
         "no-unreachable": 2,
         "no-unused-vars": "error",
         "no-useless-constructor": "error",

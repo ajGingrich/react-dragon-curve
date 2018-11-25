@@ -1,8 +1,8 @@
 import React from 'react'
 import DragonCurve from '../src/index'
 
-const HEIGHT = 800
-const WIDTH = 800
+const HEIGHT = 700
+const WIDTH = 700
 
 class App extends React.Component {
   render() {
@@ -21,6 +21,7 @@ class App extends React.Component {
               height={HEIGHT}
               width={WIDTH}
               wrapperStyles={{ display: 'flex', justifyContent: 'center' }}
+              strokeColor={'#d3dee2'}
             />
         </div>
       </div>
