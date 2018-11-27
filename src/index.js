@@ -7,7 +7,7 @@ const { Stage, Layer, Line } = StageWrap
 const X_ORIGIN = 0
 const Y_ORIGIN = 0
 const LINE_LENGTH = 100
-const TIMEOUT = 1000
+const TIMEOUT = 2000
 
 const buildLine = (iteration) => {
   const initialLine = [0, 0, LINE_LENGTH, 0]
@@ -43,20 +43,23 @@ class DragonCurve extends React.Component {
   }
 
   handleStart = () => {
-    console.log('starting...')
     this.rotate()
+  }
+
+  handleReset = () => {
+    this.setState({ iteration: 1 })
+    this.line.to({ rotation: 0, duration: 0 })
   }
 
   rotate = () => {
     const { iteration } = this.state
 
+    this.line.attrs.rotation = 0
     this.line.to({ rotation: 90, duration: TIMEOUT / 1000 })
 
-    // set timeout aftewards
+    // make componentDidUpdateDo this and add in progress??
     setTimeout(() => {
       this.setState({ iteration: iteration + 1 })
-      this.line.to({ rotation: 0, duration: 0 })
-      // rotate again
       this.rotate()
     }, TIMEOUT)
   }
@@ -74,8 +77,9 @@ class DragonCurve extends React.Component {
       <div style={wrapperStyles} >
         <Stage width={width} height={height} >
           <Portal>
-            <div className={'button'}>
-              <button onClick={this.handleStart}>Click Me</button>
+            <div >
+              <button className={'btn btn-primary'} onClick={this.handleStart}>Start</button>
+              <button className={'btn btn-warning'} onClick={this.handleReset}>Reset</button>
             </div>
           </Portal>
           <Layer>
@@ -83,7 +87,6 @@ class DragonCurve extends React.Component {
               ref={node => { this.line = node }}
               x={endX + offsetX}
               y={endY + offsetY}
-              rotation={0}
               points={backwardPoints}
               stroke={strokeColor}
               strokeWidth={2}
