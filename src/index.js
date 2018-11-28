@@ -6,15 +6,19 @@ const { Stage, Layer, Line } = StageWrap
 
 const X_ORIGIN = 0
 const Y_ORIGIN = 0
-const LINE_LENGTH = 100
-const TIMEOUT = 2000
+const LINE_LENGTH = 50
+const TIMEOUT = 1000
 
 const buildLine = (iteration) => {
   const initialLine = [0, 0, LINE_LENGTH, 0]
 
   if(iteration === 1) return initialLine
 
-  return [0, 0, LINE_LENGTH, 0, LINE_LENGTH, -LINE_LENGTH]
+  if(iteration === 2) return [0, 0, LINE_LENGTH, 0, LINE_LENGTH, -LINE_LENGTH]
+
+  if(iteration === 3) return [0, 0, LINE_LENGTH, 0, LINE_LENGTH, -LINE_LENGTH, 0, -LINE_LENGTH, 0, -LINE_LENGTH*2]
+
+  return [0, 0, LINE_LENGTH, 0, LINE_LENGTH, -LINE_LENGTH, 0, -LINE_LENGTH, 0, -LINE_LENGTH*2, -LINE_LENGTH, -LINE_LENGTH*2, -LINE_LENGTH, -LINE_LENGTH, -LINE_LENGTH*2, -LINE_LENGTH, -LINE_LENGTH*2, -LINE_LENGTH*2]
 }
 
 const buildBackwardLine = (forwardPoints, endX, endY) => {
