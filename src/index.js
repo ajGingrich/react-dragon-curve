@@ -21,6 +21,12 @@ const buildLine = (iteration) => {
   return [0, 0, LINE_LENGTH, 0, LINE_LENGTH, -LINE_LENGTH, 0, -LINE_LENGTH, 0, -LINE_LENGTH*2, -LINE_LENGTH, -LINE_LENGTH*2, -LINE_LENGTH, -LINE_LENGTH, -LINE_LENGTH*2, -LINE_LENGTH, -LINE_LENGTH*2, -LINE_LENGTH*2]
 }
 
+const calculateScale = (iteration) => {
+  if(iteration < 3) return 1
+
+  return 0.8
+}
+
 const buildBackwardLine = (forwardPoints, endX, endY) => {
   const backwards = [...Array(forwardPoints.length)]
   const forwardPointsReversed = forwardPoints.slice(0).reverse()
@@ -71,15 +77,21 @@ class DragonCurve extends React.Component {
   render() {
     const { height, width, wrapperStyles, strokeColor } = this.props
     const { iteration } = this.state
-    const offsetX = width / 2
-    const offsetY = height / 2
+    const scale = calculateScale(iteration)
+    const offsetX = (width / 2) / scale
+    const offsetY = (height / 2) / scale
     const forwardPoints = buildLine(iteration)
     const { endX, endY } = buildEndPoints(forwardPoints)
     const backwardPoints = buildBackwardLine(forwardPoints, endX, endY)
 
     return (
       <div style={wrapperStyles} >
-        <Stage width={width} height={height} >
+        <Stage
+          width={width}
+          height={height}
+          scaleX={scale}
+          scaleY={scale}
+        >
           <Portal>
             <div >
               <button className={'btn btn-primary'} onClick={this.handleStart}>Start</button>
