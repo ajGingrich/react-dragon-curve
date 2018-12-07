@@ -9,6 +9,8 @@ const Y_ORIGIN = 0
 const LINE_LENGTH = 50
 const TIMEOUT = 1000
 
+const buttonStyle = { marginRight: '1rem' }
+
 const buildLine = (iteration) => {
   const initialLine = [0, 0, LINE_LENGTH, 0]
 
@@ -93,9 +95,9 @@ class DragonCurve extends React.Component {
           scaleY={scale}
         >
           <Portal>
-            <div >
-              <button className={'btn btn-primary'} onClick={this.handleStart}>Start</button>
-              <button className={'btn btn-warning'} onClick={this.handleReset}>Reset</button>
+            <div style={{ display: 'flex', justifyContent: 'Center', paddingTop: '1rem' }}>
+              <button className={'btn btn-primary'} onClick={this.handleStart} style={buttonStyle}>Start</button>
+              <button className={'btn btn-warning'} onClick={this.handleReset} style={buttonStyle}>Reset</button>
             </div>
           </Portal>
           <Layer>
