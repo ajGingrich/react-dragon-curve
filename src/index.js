@@ -9,19 +9,14 @@ const Y_ORIGIN = 0
 const LINE_LENGTH = 50
 const TIMEOUT = 1000
 
-const buttonStyle = { marginRight: '1rem' }
-
-const buildLine = (iteration) => {
-  const initialLine = [0, 0, LINE_LENGTH, 0]
-
-  if(iteration === 1) return initialLine
-
-  if(iteration === 2) return [0, 0, LINE_LENGTH, 0, LINE_LENGTH, -LINE_LENGTH]
-
-  if(iteration === 3) return [0, 0, LINE_LENGTH, 0, LINE_LENGTH, -LINE_LENGTH, 0, -LINE_LENGTH, 0, -LINE_LENGTH*2]
-
-  return [0, 0, LINE_LENGTH, 0, LINE_LENGTH, -LINE_LENGTH, 0, -LINE_LENGTH, 0, -LINE_LENGTH*2, -LINE_LENGTH, -LINE_LENGTH*2, -LINE_LENGTH, -LINE_LENGTH, -LINE_LENGTH*2, -LINE_LENGTH, -LINE_LENGTH*2, -LINE_LENGTH*2]
+const ROTATION = {
+  0: [LINE_LENGTH, 0],
+  90: [0, -LINE_LENGTH],
+  180: [-LINE_LENGTH, 0],
+  270: [0, LINE_LENGTH],
 }
+
+const buttonStyle = { marginRight: '1rem' }
 
 const calculateScale = (iteration) => {
   if(iteration < 3) return 1
@@ -52,6 +47,8 @@ class DragonCurve extends React.Component {
     this.state = {
       iteration: 1,
     }
+
+    this.lineMemory = [[0, 0, LINE_LENGTH, 0]]
   }
 
   handleStart = () => {
@@ -61,6 +58,34 @@ class DragonCurve extends React.Component {
   handleReset = () => {
     this.setState({ iteration: 1 })
     this.line.to({ rotation: 0, duration: 0 })
+  }
+
+  buildLine = (iteration) => {
+    if(iteration === 1) return this.lineMemory[0]
+
+    const previousLine = this.lineMemory[iteration - 2]
+    const nextLineForTransforming = previousLine.slice(2)
+    const nextLine = []
+    let currentIterationRotation = 0
+
+    if (iteration % 4 === 0) {
+      currentIterationRotation = 270
+    } else if (iteration % 3 === 0) {
+      currentIterationRotation = 180
+    } else if (iteration % 2 === 0) {
+      currentIterationRotation = 90
+    }
+
+    for(var i=0; i < nextLineForTransforming.length; i += 2) { //eslint-disable-line
+      nextLine.push(nextLineForTransforming[i] + ROTATION[currentIterationRotation][0])
+      nextLine.push(nextLineForTransforming[i+1] + ROTATION[currentIterationRotation][1])
+    }
+
+    const res = previousLine.concat(nextLine)
+
+    this.lineMemory.push(res)
+
+    return res
   }
 
   rotate = () => {
@@ -82,7 +107,7 @@ class DragonCurve extends React.Component {
     const scale = calculateScale(iteration)
     const offsetX = (width / 2) / scale
     const offsetY = (height / 2) / scale
-    const forwardPoints = buildLine(iteration)
+    const forwardPoints = this.buildLine(iteration)
     const { endX, endY } = buildEndPoints(forwardPoints)
     const backwardPoints = buildBackwardLine(forwardPoints, endX, endY)
 

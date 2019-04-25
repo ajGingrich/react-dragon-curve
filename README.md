@@ -12,3 +12,11 @@ Add the background styles to your index
   </style>
 </head>
 ```
+
+To run develop locally
+```
+npm run build
+npm run dev
+
+open up localhost:8000
+```
