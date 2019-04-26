@@ -46,17 +46,15 @@ class DragonCurve extends React.Component {
 
     this.state = {
       iteration: 1,
+      isPlaying: null,
+      test: false,
     }
 
     this.lineMemory = [[0, 0, LINE_LENGTH, 0]]
   }
 
-  handleStart = () => {
-    this.rotate()
-  }
-
   handleReset = () => {
-    this.setState({ iteration: 1 })
+    this.setState({ iteration: 1, isPlaying: false })
     this.line.to({ rotation: 0, duration: 0 })
   }
 
@@ -88,17 +86,29 @@ class DragonCurve extends React.Component {
     return res
   }
 
-  rotate = () => {
-    const { iteration } = this.state
+  handlePause = () => {
+    this.setState({ isPlaying: !this.state.isPlaying })
+  }
 
+  handlePlay = () => {
+    this.setState({ isPlaying: true })
+    this.rotate()
+  }
+
+  rotate = () => {
     this.line.attrs.rotation = 0
     this.line.to({ rotation: 90, duration: TIMEOUT / 1000 })
+  }
 
-    // make componentDidUpdateDo this and add in progress??
-    setTimeout(() => {
-      this.setState({ iteration: iteration + 1 })
-      this.rotate()
-    }, TIMEOUT)
+  componentDidUpdate() {
+    if(this.state.isPlaying) {
+      this.timeoutID = setTimeout(() => {
+        this.setState({ iteration: this.state.iteration + 1})
+        this.rotate()
+      }, TIMEOUT)
+    } else {
+      clearTimeout(this.timeoutID)
+    }
   }
 
   render() {
@@ -111,6 +121,8 @@ class DragonCurve extends React.Component {
     const { endX, endY } = buildEndPoints(forwardPoints)
     const backwardPoints = buildBackwardLine(forwardPoints, endX, endY)
 
+    console.log('iteration..', iteration)
+
     return (
       <div style={wrapperStyles} >
         <Stage
@@ -119,10 +131,11 @@ class DragonCurve extends React.Component {
           scaleX={scale}
           scaleY={scale}
         >
-          <Portal>
+          <Portal style={{ marginBottom: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'Center', paddingTop: '1rem' }}>
-              <button className={'btn btn-primary'} onClick={this.handleStart} style={buttonStyle}>Start</button>
+              <button className={'btn btn-primary'} onClick={this.handlePlay} style={buttonStyle}>Start</button>
               <button className={'btn btn-warning'} onClick={this.handleReset} style={buttonStyle}>Reset</button>
+              <button className={'btn btn-warning'} onClick={this.handlePause} style={buttonStyle}>{this.state.isPlaying ? 'Pause' : 'Play'}</button>
             </div>
           </Portal>
           <Layer>
