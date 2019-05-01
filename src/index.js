@@ -59,7 +59,7 @@ class DragonCurve extends React.Component {
     }
 
     this.lineMemory = ['FX']
-    this.pointsMemory = []
+    this.pointsMemory = [[0, 0, LINE_LENGTH, 0]]
     this.angleMemory = [90]
   }
 
@@ -90,20 +90,14 @@ class DragonCurve extends React.Component {
   }
 
   buildLinePoints = (currentLineString, iteration) => {
-    if(iteration === 1) {
-      const result = [0, 0, LINE_LENGTH, 0]
-      this.pointsMemory.push(result)
+    if(iteration === 1) return this.pointsMemory[0]
 
-      return result
-    }
+    const previousLinePoints = this.pointsMemory[iteration - 2].slice(0)
+    const previousLineString = this.lineMemory[iteration - 2].slice(0)
+    const newPoints = [previousLinePoints[previousLinePoints.length-2], previousLinePoints[previousLinePoints.length - 1]]
 
-    const previousLine = this.pointsMemory[iteration - 2].slice(0)
-    const newPoints = [previousLine[previousLine.length-2], previousLine[previousLine.length - 1]]
-
-    const instructions = currentLineString.slice(this.lineMemory[iteration - 2].length).split('')
+    const instructions = currentLineString.slice(previousLineString.length).split('')
     let currentDirection = iteration > 1 ? this.angleMemory[iteration - 2] : 90 // turtle angle
-
-    console.log(currentDirection, 'direction', iteration, 'iteration', this.angleMemory, 'angle memory7')
 
     for (const c of instructions) {
       const previousPointX = newPoints[newPoints.length-2]
@@ -137,13 +131,12 @@ class DragonCurve extends React.Component {
       }
     }
 
-    const res = previousLine.concat(newPoints.slice(2))
+    const res = previousLinePoints.concat(newPoints.slice(2))
 
-    console.log(res, 'rse')
     this.pointsMemory.push(res)
     this.angleMemory.push(currentDirection)
 
-    return newPoints
+    return res
   }
 
   handlePause = () => {
