@@ -9,12 +9,14 @@ const Y_ORIGIN = 0
 const LINE_LENGTH = 50
 const TIMEOUT = 1000
 
-const ROTATION = {
-  0: [LINE_LENGTH, 0],
-  90: [0, -LINE_LENGTH],
-  180: [-LINE_LENGTH, 0],
-  270: [0, LINE_LENGTH],
-}
+// From the Lindenmayer system
+// https://en.wikipedia.org/wiki/L-system
+// Alaphabet: X, Y
+// Constants: F, +, -
+// Start: FX
+// Rules: (X -> X+YF+), (Y -> -FX-Y)
+// where F means draw forward, - means turn left 90, + means turn right 90
+// X and Y do not correspond to any drawing action and are only used to control the evolution of the curve
 
 const buttonStyle = { marginRight: '1rem' }
 
@@ -50,7 +52,7 @@ class DragonCurve extends React.Component {
       test: false,
     }
 
-    this.lineMemory = [[0, 0, LINE_LENGTH, 0]]
+    this.lineMemory = ['FX']
   }
 
   handleReset = () => {
@@ -58,30 +60,71 @@ class DragonCurve extends React.Component {
     this.line.to({ rotation: 0, duration: 0 })
   }
 
-  buildLine = (iteration) => {
+  buildLineString = (iteration) => {
     if(iteration === 1) return this.lineMemory[0]
 
-    const previousLine = this.lineMemory[iteration - 2]
-    const nextLineForTransforming = previousLine.slice(2)
-    const nextLine = []
-    let currentIterationRotation = 0
+    const previousLine = this.lineMemory[iteration - 2].split('')
+    let newLine = ''
 
-    if (iteration % 4 === 0) {
-      currentIterationRotation = 270
-    } else if (iteration % 3 === 0) {
-      currentIterationRotation = 180
-    } else if (iteration % 2 === 0) {
-      currentIterationRotation = 90
+    for (const c of previousLine) {
+      if(c === 'X') {
+        newLine += 'X+YF+'
+      } else if(c === 'Y') {
+        newLine += '-FX-Y'
+      } else {
+        newLine += c
+      }
     }
 
-    for(var i=0; i < nextLineForTransforming.length; i += 2) { //eslint-disable-line
-      nextLine.push(nextLineForTransforming[i] + ROTATION[currentIterationRotation][0])
-      nextLine.push(nextLineForTransforming[i+1] + ROTATION[currentIterationRotation][1])
+    this.lineMemory.push(newLine)
+
+    console.log(newLine, 'newLine')
+
+    return newLine
+  }
+
+  buildLinePoints = (currentLineString) => {
+    const res = [0, 0]
+    const instructions = currentLineString.split('')
+    let currentDirection = 0 // turtle angle
+
+    for (const c of instructions) {
+      // console.log('c', c)
+      const previousPointX = res[res.length-2]
+      const previousPointY = res[res.length-1]
+
+      if(c === 'F') {
+        switch (currentDirection) {
+          case 0: res.push(previousPointX, previousPointY + LINE_LENGTH)
+            break
+          case 90: res.push(previousPointX + LINE_LENGTH, previousPointY)
+            break
+          case 180: res.push(previousPointX, previousPointY - LINE_LENGTH)
+            break
+          case 270: res.push(previousPointX - LINE_LENGTH, previousPointY)
+            break
+          default:
+            break
+        }
+      } else if(c === '+') {
+        if(currentDirection <= 180) {
+          currentDirection += 90
+        } else {
+          // console.log('setting to 0 from adding')
+          currentDirection = 0
+        }
+      } else if(c === '-') {
+        if(currentDirection >= 90) {
+          currentDirection -= 90
+        } else {
+          // console.log('setting to 270 from subtracdtion')
+          currentDirection = 270
+        }
+      }
+      // console.log(currentDirection, 'direction')
     }
 
-    const res = previousLine.concat(nextLine)
-
-    this.lineMemory.push(res)
+    // console.log(res, 'res'
 
     return res
   }
@@ -117,11 +160,10 @@ class DragonCurve extends React.Component {
     const scale = calculateScale(iteration)
     const offsetX = (width / 2) / scale
     const offsetY = (height / 2) / scale
-    const forwardPoints = this.buildLine(iteration)
+    const currentLineString = this.buildLineString(iteration)
+    const forwardPoints = this.buildLinePoints(currentLineString)
     const { endX, endY } = buildEndPoints(forwardPoints)
     const backwardPoints = buildBackwardLine(forwardPoints, endX, endY)
-
-    console.log('iteration..', iteration)
 
     return (
       <div style={wrapperStyles} >
