@@ -59,6 +59,8 @@ class DragonCurve extends React.Component {
     }
 
     this.lineMemory = ['FX']
+    this.pointsMemory = []
+    this.angleMemory = [90]
   }
 
   handleReset = () => {
@@ -87,24 +89,35 @@ class DragonCurve extends React.Component {
     return newLine
   }
 
-  buildLinePoints = (currentLineString) => {
-    const res = [0, 0]
-    const instructions = currentLineString.split('')
-    let currentDirection = 90 // turtle angle
+  buildLinePoints = (currentLineString, iteration) => {
+    if(iteration === 1) {
+      const result = [0, 0, LINE_LENGTH, 0]
+      this.pointsMemory.push(result)
+
+      return result
+    }
+
+    const previousLine = this.pointsMemory[iteration - 2].slice(0)
+    const newPoints = [previousLine[previousLine.length-2], previousLine[previousLine.length - 1]]
+
+    const instructions = currentLineString.slice(this.lineMemory[iteration - 2].length).split('')
+    let currentDirection = iteration > 1 ? this.angleMemory[iteration - 2] : 90 // turtle angle
+
+    console.log(currentDirection, 'direction', iteration, 'iteration', this.angleMemory, 'angle memory7')
 
     for (const c of instructions) {
-      const previousPointX = res[res.length-2]
-      const previousPointY = res[res.length-1]
+      const previousPointX = newPoints[newPoints.length-2]
+      const previousPointY = newPoints[newPoints.length-1]
 
       if(c === 'F') {
         switch (currentDirection) {
-          case 0: res.push(previousPointX, previousPointY + LINE_LENGTH)
+          case 0: newPoints.push(previousPointX, previousPointY + LINE_LENGTH)
             break
-          case 90: res.push(previousPointX + LINE_LENGTH, previousPointY)
+          case 90: newPoints.push(previousPointX + LINE_LENGTH, previousPointY)
             break
-          case 180: res.push(previousPointX, previousPointY - LINE_LENGTH)
+          case 180: newPoints.push(previousPointX, previousPointY - LINE_LENGTH)
             break
-          case 270: res.push(previousPointX - LINE_LENGTH, previousPointY)
+          case 270: newPoints.push(previousPointX - LINE_LENGTH, previousPointY)
             break
           default:
             break
@@ -124,7 +137,13 @@ class DragonCurve extends React.Component {
       }
     }
 
-    return res
+    const res = previousLine.concat(newPoints.slice(2))
+
+    console.log(res, 'rse')
+    this.pointsMemory.push(res)
+    this.angleMemory.push(currentDirection)
+
+    return newPoints
   }
 
   handlePause = () => {
@@ -159,7 +178,7 @@ class DragonCurve extends React.Component {
     const offsetX = (width / 2) / scale
     const offsetY = (height / 2) / scale
     const currentLineString = this.buildLineString(iteration)
-    const forwardPoints = this.buildLinePoints(currentLineString)
+    const forwardPoints = this.buildLinePoints(currentLineString, iteration)
     const { endX, endY } = buildEndPoints(forwardPoints)
     const backwardPoints = buildBackwardLine(forwardPoints, endX, endY)
 
