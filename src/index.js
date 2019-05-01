@@ -21,9 +21,15 @@ const TIMEOUT = 1000
 const buttonStyle = { marginRight: '1rem' }
 
 const calculateScale = (iteration) => {
-  if(iteration < 3) return 1
+  if(iteration <= 5) return 0.9
 
-  return 0.8
+  if(iteration <= 10) return 0.1
+
+  if(iteration <= 15) return 0.05
+
+  if(iteration <= 20) return 0.02
+
+  return 0.005
 }
 
 const buildBackwardLine = (forwardPoints, endX, endY) => {
@@ -78,18 +84,15 @@ class DragonCurve extends React.Component {
 
     this.lineMemory.push(newLine)
 
-    console.log(newLine, 'newLine')
-
     return newLine
   }
 
   buildLinePoints = (currentLineString) => {
     const res = [0, 0]
     const instructions = currentLineString.split('')
-    let currentDirection = 0 // turtle angle
+    let currentDirection = 90 // turtle angle
 
     for (const c of instructions) {
-      // console.log('c', c)
       const previousPointX = res[res.length-2]
       const previousPointY = res[res.length-1]
 
@@ -110,21 +113,16 @@ class DragonCurve extends React.Component {
         if(currentDirection <= 180) {
           currentDirection += 90
         } else {
-          // console.log('setting to 0 from adding')
           currentDirection = 0
         }
       } else if(c === '-') {
         if(currentDirection >= 90) {
           currentDirection -= 90
         } else {
-          // console.log('setting to 270 from subtracdtion')
           currentDirection = 270
         }
       }
-      // console.log(currentDirection, 'direction')
     }
-
-    // console.log(res, 'res'
 
     return res
   }
