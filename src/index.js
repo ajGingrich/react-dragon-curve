@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import StageWrap from 'react-konva'
 
 import Portal from './Portal'
@@ -6,8 +7,6 @@ const { Stage, Layer, Line } = StageWrap
 
 const X_ORIGIN = 0
 const Y_ORIGIN = 0
-const LINE_LENGTH = 50
-const TIMEOUT = 1000
 
 // From the Lindenmayer system
 // https://en.wikipedia.org/wiki/L-system
@@ -18,9 +17,8 @@ const TIMEOUT = 1000
 // where F means draw forward, - means turn left 90, + means turn right 90
 // X and Y do not correspond to any drawing action and are only used to control the evolution of the curve
 
-const buttonStyle = { marginRight: '1rem' }
-
 const calculateScale = (iteration) => {
+  //work on scale
   if(iteration <= 5) return 0.9
 
   if(iteration <= 10) return 0.1
@@ -59,7 +57,7 @@ class DragonCurve extends React.Component {
     }
 
     this.lineMemory = ['FX']
-    this.pointsMemory = [[0, 0, LINE_LENGTH, 0]]
+    this.pointsMemory = [[0, 0, this.props.lineLength, 0]]
     this.angleMemory = [90]
   }
 
@@ -90,6 +88,7 @@ class DragonCurve extends React.Component {
   }
 
   buildLinePoints = (currentLineString, iteration) => {
+    const { lineLength } = this.props
     if(iteration === 1) return this.pointsMemory[0]
 
     const previousLinePoints = this.pointsMemory[iteration - 2].slice(0)
@@ -105,13 +104,13 @@ class DragonCurve extends React.Component {
 
       if(c === 'F') {
         switch (currentDirection) {
-          case 0: newPoints.push(previousPointX, previousPointY + LINE_LENGTH)
+          case 0: newPoints.push(previousPointX, previousPointY + lineLength)
             break
-          case 90: newPoints.push(previousPointX + LINE_LENGTH, previousPointY)
+          case 90: newPoints.push(previousPointX + lineLength, previousPointY)
             break
-          case 180: newPoints.push(previousPointX, previousPointY - LINE_LENGTH)
+          case 180: newPoints.push(previousPointX, previousPointY - lineLength)
             break
-          case 270: newPoints.push(previousPointX - LINE_LENGTH, previousPointY)
+          case 270: newPoints.push(previousPointX - lineLength, previousPointY)
             break
           default:
             break
@@ -140,6 +139,7 @@ class DragonCurve extends React.Component {
   }
 
   handlePause = () => {
+    // work on pause button..
     this.setState({ isPlaying: !this.state.isPlaying })
   }
 
@@ -150,23 +150,33 @@ class DragonCurve extends React.Component {
 
   rotate = () => {
     this.line.attrs.rotation = 0
-    this.line.to({ rotation: 90, duration: TIMEOUT / 1000 })
+    this.line.to({ rotation: 90, duration: this.props.animationSpeed / 1000 })
   }
 
   componentDidUpdate() {
-    if(this.state.isPlaying) {
+    const { isPlaying, iteration } = this.state
+    const { animationSpeed } = this.props
+
+    if(isPlaying) {
       this.timeoutID = setTimeout(() => {
-        this.setState({ iteration: this.state.iteration + 1})
+        this.setState({ iteration: iteration + 1})
         this.rotate()
-      }, TIMEOUT)
+      }, animationSpeed)
     } else {
       clearTimeout(this.timeoutID)
     }
   }
 
   render() {
-    const { height, width, wrapperStyles, strokeColor } = this.props
-    const { iteration } = this.state
+    const {
+      height,
+      width,
+      strokeColor,
+      controlClassnames,
+      strokeWidth,
+    } = this.props
+    const { controlContainer, controlStart, controlReset, controlPause } = controlClassnames || {}
+    const { iteration, isPlaying } = this.state
     const scale = calculateScale(iteration)
     const offsetX = (width / 2) / scale
     const offsetY = (height / 2) / scale
@@ -176,43 +186,64 @@ class DragonCurve extends React.Component {
     const backwardPoints = buildBackwardLine(forwardPoints, endX, endY)
 
     return (
-      <div style={wrapperStyles} >
-        <Stage
-          width={width}
-          height={height}
-          scaleX={scale}
-          scaleY={scale}
-        >
-          <Portal style={{ marginBottom: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'Center', paddingTop: '1rem' }}>
-              <button className={'btn btn-primary'} onClick={this.handlePlay} style={buttonStyle}>Start</button>
-              <button className={'btn btn-warning'} onClick={this.handleReset} style={buttonStyle}>Reset</button>
-              <button className={'btn btn-warning'} onClick={this.handlePause} style={buttonStyle}>{this.state.isPlaying ? 'Pause' : 'Play'}</button>
-            </div>
-          </Portal>
-          <Layer>
-            <Line
-              ref={node => { this.line = node }}
-              x={endX + offsetX}
-              y={endY + offsetY}
-              points={backwardPoints}
-              stroke={strokeColor}
-              strokeWidth={2}
-              draggable
-            />
-            <Line
-              x={X_ORIGIN + offsetX}
-              y={Y_ORIGIN + offsetY}
-              points={forwardPoints}
-              stroke={strokeColor}
-              strokeWidth={2}
-              draggable
-            />
-          </Layer>
-        </Stage>
-      </div>
+      <Stage
+        width={width}
+        height={height}
+        scaleX={scale}
+        scaleY={scale}
+      >
+        <Portal>
+          <div className={controlContainer}>
+            <button className={controlStart} onClick={this.handlePlay}>Start</button>
+            <button className={controlReset} onClick={this.handleReset}>Reset</button>
+            {isPlaying && iteration > 1 &&
+              <button className={controlPause} onClick={this.handlePause}>{this.state.isPlaying ? 'Pause' : 'Resume'}</button>
+            }
+          </div>
+        </Portal>
+        <Layer>
+          <Line
+            ref={node => { this.line = node }}
+            x={endX + offsetX}
+            y={endY + offsetY}
+            points={backwardPoints}
+            stroke={strokeColor}
+            strokeWidth={strokeWidth}
+            draggable
+          />
+          <Line
+            x={X_ORIGIN + offsetX}
+            y={Y_ORIGIN + offsetY}
+            points={forwardPoints}
+            stroke={strokeColor}
+            strokeWidth={strokeWidth}
+            draggable
+          />
+        </Layer>
+      </Stage>
     )
   }
+}
+
+DragonCurve.propTypes = {
+  height: PropTypes.number,
+  width: PropTypes.number,
+  strokeColor: PropTypes.string,
+  strokeWidth: PropTypes.number,
+  lineLength: PropTypes.number,
+  animationSpeed: PropTypes.number,
+  whiteSquareColor: PropTypes.string,
+  controlClassnames: PropTypes.object,
+}
+
+DragonCurve.defaultProps = {
+  height: 600,
+  width: 600,
+  strokeColor: '#d3dee2',
+  strokeWidth: 2,
+  lineLength: 50,
+  animationSpeed: 1000,
+  controlClassnames: { controlContainer: '', controlStart: '', controlReset: '', controlPause: '' },
 }
 
 export default DragonCurve

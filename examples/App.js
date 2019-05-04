@@ -1,29 +1,25 @@
 import React from 'react'
 import DragonCurve from '../src/index'
 
-const HEIGHT = 700
-const WIDTH = 700
-
 class App extends React.Component {
   render() {
-    const headerStyles = {
-      color: '#18003f',
-      display: 'flex',
-      justifyContent: 'center',
-      paddingBottom: '5rem',
-    }
-
     return (
-      <div className="container">
-        <div className="row">
-          <h2 style={headerStyles}>React Dragon Curve</h2>
-            <DragonCurve
-              height={HEIGHT}
-              width={WIDTH}
-              wrapperStyles={{ display: 'flex', justifyContent: 'center' }}
-              strokeColor={'#d3dee2'}
-            />
-        </div>
+      <div className="wrapper">
+        <h2>React Dragon Curve</h2>
+          <DragonCurve
+            height={600}
+            width={600}
+            controlClassnames={{
+              controlContainer: 'button-container',
+              controlStart: 'btn btn-primary',
+              controlReset: 'btn btn-warning',
+              controlPause: 'btn btn-warning',
+            }}
+            strokeWidth={2}
+            strokeColor={'#d3dee2'}
+            lineLength={25}
+            animationSpeed={1500}
+          />
       </div>
     )
   }
