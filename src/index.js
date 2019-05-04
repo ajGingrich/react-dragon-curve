@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import StageWrap from 'react-konva'
 
-import Portal from './Portal'
 const { Stage, Layer, Line } = StageWrap
 
 const X_ORIGIN = 0
@@ -186,41 +185,41 @@ class DragonCurve extends React.Component {
     const backwardPoints = buildBackwardLine(forwardPoints, endX, endY)
 
     return (
-      <Stage
-        width={width}
-        height={height}
-        scaleX={scale}
-        scaleY={scale}
-      >
-        <Portal>
-          <div className={controlContainer}>
-            <button className={controlStart} onClick={this.handlePlay}>Start</button>
-            <button className={controlReset} onClick={this.handleReset}>Reset</button>
-            {isPlaying && iteration > 1 &&
-              <button className={controlPause} onClick={this.handlePause}>{this.state.isPlaying ? 'Pause' : 'Resume'}</button>
-            }
-          </div>
-        </Portal>
-        <Layer>
-          <Line
-            ref={node => { this.line = node }}
-            x={endX + offsetX}
-            y={endY + offsetY}
-            points={backwardPoints}
-            stroke={strokeColor}
-            strokeWidth={strokeWidth}
-            draggable
-          />
-          <Line
-            x={X_ORIGIN + offsetX}
-            y={Y_ORIGIN + offsetY}
-            points={forwardPoints}
-            stroke={strokeColor}
-            strokeWidth={strokeWidth}
-            draggable
-          />
-        </Layer>
-      </Stage>
+      <div>
+        <Stage
+          width={width}
+          height={height}
+          scaleX={scale}
+          scaleY={scale}
+        >
+          <Layer>
+            <Line
+              ref={node => { this.line = node }}
+              x={endX + offsetX}
+              y={endY + offsetY}
+              points={backwardPoints}
+              stroke={strokeColor}
+              strokeWidth={strokeWidth}
+              draggable
+            />
+            <Line
+              x={X_ORIGIN + offsetX}
+              y={Y_ORIGIN + offsetY}
+              points={forwardPoints}
+              stroke={strokeColor}
+              strokeWidth={strokeWidth}
+              draggable
+            />
+          </Layer>
+        </Stage>
+        <div className={controlContainer}>
+          <button className={controlStart} onClick={this.handlePlay}>Start</button>
+          <button className={controlReset} onClick={this.handleReset}>Reset</button>
+          {isPlaying && iteration > 1 &&
+            <button className={controlPause} onClick={this.handlePause}>{this.state.isPlaying ? 'Pause' : 'Resume'}</button>
+          }
+        </div>
+      </div>
     )
   }
 }
