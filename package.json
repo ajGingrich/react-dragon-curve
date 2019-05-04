@@ -1,6 +1,6 @@
 {
   "name": "react-dragon-curve",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Heighway dragon drawn in React",
   "main": "dist/index.js",
   "scripts": {
