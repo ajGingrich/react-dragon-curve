@@ -40,7 +40,7 @@ if(isProduction) {
     include: 'node_modules/**'
   }))
   plugins.push(require("rollup-plugin-uglify")())
-  // plugins.push(require("rollup-analyzer-plugin")(analyzerOptions))
+  plugins.push(require("rollup-analyzer-plugin")(analyzerOptions))
 } else {
   plugins.push(require("rollup-plugin-commonjs")({
     include: 'node_modules/**',

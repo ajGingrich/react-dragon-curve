@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import StageWrap from 'react-konva'
+import StageWrap from 'react-konva/lib/ReactKonvaCore';
 
 const { Stage, Layer, Line } = StageWrap
+
+import 'konva/lib/shapes/Line';
 
 const X_ORIGIN = 0
 const Y_ORIGIN = 0
