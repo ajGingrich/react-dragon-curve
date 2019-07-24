@@ -158,7 +158,7 @@ class DragonCurve extends React.Component {
     const { isPlaying, iteration } = this.state
     const { animationSpeed } = this.props
 
-    if(isPlaying) {
+    if(isPlaying && iteration < 18) {
       this.timeoutID = setTimeout(() => {
         this.setState({ iteration: iteration + 1})
         this.rotate()
